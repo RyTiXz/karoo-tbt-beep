@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">TBT Beep</string>
+    <string name="extension_name">tbtbeep</string>
+
+    <string name="approach_alert">Vorwarnung</string>
+    <string name="at_turn_alert">Am Abzweig</string>
+
+    <string name="label_distance">Meter</string>
+    <string name="label_frequency">Hz</string>
+    <string name="label_duration">ms</string>
+    <string name="label_beeps">Töne</string>
+    <string name="test_sound">Ton testen</string>
+
+    <string name="enabled">Aktiviert</string>
+    <string name="in_ride_only">Nur während Fahrt</string>
+    <string name="wake_up_screen">Display aufwecken</string>
+    <string name="save">Speichern</string>
+    <string name="ok">OK</string>
+    <string name="settings_saved">Einstellungen gespeichert.</string>
+
+    <string name="help_title">So funktioniert es</string>
+    <string name="help_alerts">Vorwarnung = früher Hinweis vor dem Abzweig. Am Abzweig = zweiter Ton direkt am Abzweig. Beide sind einzeln schaltbar.</string>
+    <string name="help_meters">Meter: Der Ton kommt, sobald die Distanz zum nächsten Abzweig unter diesen Wert fällt.</string>
+    <string name="help_frequency">Hz: Tonhöhe. Niedriger = leiser/weicher, höher = schärfer.</string>
+    <string name="help_duration">ms: Länge eines einzelnen Tons.</string>
+    <string name="help_beeps">Töne: Anzahl der Töne hintereinander.</string>
+    <string name="help_enabled">Aktiviert: Hauptschalter für alle Alerts.</string>
+    <string name="help_in_ride">Nur während Fahrt: Töne nur bei laufender Aufzeichnung.</string>
+    <string name="help_wake">Display aufwecken: Schaltet das Display ein, wenn ein Alert kommt.</string>
+    <string name="help_stock">Wichtig: Den Standard-TBT-Ton unter Profile → Audio Alerts → Turn By Turn deaktivieren, sonst hörst du beide.</string>
+</resources>

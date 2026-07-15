@@ -3,9 +3,9 @@
   "packageName": "io.github.rytixz.tbtbeep",
   "iconUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/karoo-tbtbeep.png",
   "latestApkUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/app-release.apk",
-  "latestVersionCode": 1,
-  "latestVersion": "0.1.0",
+  "latestVersionCode": 2,
+  "latestVersion": "0.2.0",
   "developer": "https://github.com/RyTiXz",
   "description": "Configurable quiet turn-by-turn beeps for Hammerhead Karoo.",
-  "releaseNotes": "Initial release"
+  "releaseNotes": "Localized UI (EN/DE), clearer labels, test button with label, built-in help section"
 }

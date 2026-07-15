@@ -24,11 +24,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import io.hammerhead.karooext.KarooSystemService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import io.github.rytixz.tbtbeep.R
 import io.github.rytixz.tbtbeep.TurnAlert
 import io.github.rytixz.tbtbeep.beep
 
@@ -59,7 +61,7 @@ private fun NumberField(
         },
         modifier = modifier,
         singleLine = true,
-        label = { Text(text = label) }
+        label = { Text(text = label, maxLines = 1, softWrap = false) }
     )
 }
 
@@ -88,53 +90,62 @@ fun DrawAlertPanel(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp)
+            .padding(horizontal = 3.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         NumberField(
             value = alert.distance,
-            label = "Dist. m",
+            label = stringResource(R.string.label_distance),
             pattern = pattern,
             modifier = Modifier.weight(1f),
             onChange = { onChange(alert.copy(distance = it)) },
         )
         NumberField(
+            value = alert.beep.count,
+            label = stringResource(R.string.label_beeps),
+            pattern = pattern,
+            modifier = Modifier.weight(1f),
+            onChange = { onChange(alert.copy(beep = alert.beep.copy(count = it))) },
+        )
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 3.dp, vertical = 3.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        NumberField(
             value = alert.beep.frequency,
-            label = "Freq.",
+            label = stringResource(R.string.label_frequency),
             pattern = pattern,
             modifier = Modifier.weight(1f),
             onChange = { onChange(alert.copy(beep = alert.beep.copy(frequency = it))) },
         )
         NumberField(
             value = alert.beep.duration,
-            label = "Dur.",
+            label = stringResource(R.string.label_duration),
             pattern = pattern,
             modifier = Modifier.weight(1f),
             onChange = { onChange(alert.copy(beep = alert.beep.copy(duration = it))) },
         )
-        NumberField(
-            value = alert.beep.count,
-            label = "x",
-            pattern = pattern,
-            modifier = Modifier.weight(0.7f),
-            onChange = { onChange(alert.copy(beep = alert.beep.copy(count = it))) },
-        )
-        FilledTonalButton(
-            modifier = Modifier
-                .weight(0.8f)
-                .height(65.dp),
-            shape = RoundedCornerShape(8.dp),
-            onClick = {
-                scope.launch {
-                    karooSystem.beep(
-                        alert.beep.frequency,
-                        alert.beep.duration,
-                        alert.beep.count,
-                    )
-                }
-            }) {
-            Icon(Icons.Default.PlayArrow, contentDescription = "Test")
-        }
+    }
+    FilledTonalButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 3.dp)
+            .height(44.dp),
+        shape = RoundedCornerShape(8.dp),
+        onClick = {
+            scope.launch {
+                karooSystem.beep(
+                    alert.beep.frequency,
+                    alert.beep.duration,
+                    alert.beep.count,
+                )
+            }
+        }) {
+        Icon(Icons.Default.PlayArrow, contentDescription = null)
+        Spacer(modifier = Modifier.width(5.dp))
+        Text(stringResource(R.string.test_sound))
     }
 }

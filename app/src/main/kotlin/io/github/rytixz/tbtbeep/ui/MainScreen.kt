@@ -36,12 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.hammerhead.karooext.KarooSystemService
 import kotlinx.coroutines.launch
 import io.github.rytixz.tbtbeep.KarooTbtExtension.Companion.TAG
+import io.github.rytixz.tbtbeep.R
 import io.github.rytixz.tbtbeep.TbtSettings
-import io.github.rytixz.tbtbeep.TurnAlert
 import io.github.rytixz.tbtbeep.saveSettings
 import io.github.rytixz.tbtbeep.streamSettings
 
@@ -103,6 +104,17 @@ fun MainScreen() {
         }
     }
 
+    @Composable
+    fun helpLine(text: String) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp, vertical = 2.dp),
+            style = MaterialTheme.typography.bodySmall,
+            text = text,
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -120,28 +132,28 @@ fun MainScreen() {
                 .height(5.dp)
         ) {}
         DrawAlertPanel(
-            karooSystem, scope, "Approach alert", uiFarAlert, pattern,
+            karooSystem, scope, stringResource(R.string.approach_alert), uiFarAlert, pattern,
             onChange = { uiFarAlert = it },
         )
         HorizontalDivider(
             thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)
         )
         DrawAlertPanel(
-            karooSystem, scope, "At-turn alert", uiNearAlert, pattern,
+            karooSystem, scope, stringResource(R.string.at_turn_alert), uiNearAlert, pattern,
             onChange = { uiNearAlert = it },
         )
         HorizontalDivider(
             thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)
         )
-        labelledSwitch("Enabled", uiEnabled) {
+        labelledSwitch(stringResource(R.string.enabled), uiEnabled) {
             uiEnabled = it
             saveUISettings()
         }
-        labelledSwitch("In-ride only", uiInRideOnly) {
+        labelledSwitch(stringResource(R.string.in_ride_only), uiInRideOnly) {
             uiInRideOnly = it
             saveUISettings()
         }
-        labelledSwitch("Wake up screen", uiWakeUpScreen) {
+        labelledSwitch(stringResource(R.string.wake_up_screen), uiWakeUpScreen) {
             uiWakeUpScreen = it
             saveUISettings()
         }
@@ -156,19 +168,39 @@ fun MainScreen() {
                     savedDialogVisible = true
                 }
             }) {
-            Icon(Icons.Default.Done, contentDescription = "")
+            Icon(Icons.Default.Done, contentDescription = null)
             Spacer(modifier = Modifier.width(5.dp))
-            Text("Save")
+            Text(stringResource(R.string.save))
         }
+        HorizontalDivider(
+            thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 6.dp),
+            style = MaterialTheme.typography.titleSmall,
+            text = stringResource(R.string.help_title),
+        )
+        helpLine(stringResource(R.string.help_alerts))
+        helpLine(stringResource(R.string.help_meters))
+        helpLine(stringResource(R.string.help_frequency))
+        helpLine(stringResource(R.string.help_duration))
+        helpLine(stringResource(R.string.help_beeps))
+        helpLine(stringResource(R.string.help_enabled))
+        helpLine(stringResource(R.string.help_in_ride))
+        helpLine(stringResource(R.string.help_wake))
+        helpLine(stringResource(R.string.help_stock))
+        Spacer(modifier = Modifier.size(10.dp))
         if (savedDialogVisible) {
             AlertDialog(
                 onDismissRequest = { savedDialogVisible = false },
                 confirmButton = {
                     Button(onClick = {
                         savedDialogVisible = false
-                    }) { Text("OK") }
+                    }) { Text(stringResource(R.string.ok)) }
                 },
-                text = { Text("Settings saved successfully.") }
+                text = { Text(stringResource(R.string.settings_saved)) }
             )
         }
     }

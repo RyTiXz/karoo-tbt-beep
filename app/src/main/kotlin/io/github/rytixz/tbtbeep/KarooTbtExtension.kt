@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
-class KarooTbtExtension : KarooExtension("tbtbeep", "0.1.0") {
+class KarooTbtExtension : KarooExtension("tbtbeep", "0.2.0") {
     companion object {
         const val TAG = "tbtbeep"
 

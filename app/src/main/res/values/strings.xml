@@ -1,4 +1,31 @@
 <resources>
     <string name="app_name">TBT Beep</string>
     <string name="extension_name">tbtbeep</string>
+
+    <string name="approach_alert">Approach alert</string>
+    <string name="at_turn_alert">At-turn alert</string>
+
+    <string name="label_distance">Meters</string>
+    <string name="label_frequency">Hz</string>
+    <string name="label_duration">ms</string>
+    <string name="label_beeps">Beeps</string>
+    <string name="test_sound">Test sound</string>
+
+    <string name="enabled">Enabled</string>
+    <string name="in_ride_only">In-ride only</string>
+    <string name="wake_up_screen">Wake up screen</string>
+    <string name="save">Save</string>
+    <string name="ok">OK</string>
+    <string name="settings_saved">Settings saved successfully.</string>
+
+    <string name="help_title">How it works</string>
+    <string name="help_alerts">Approach alert = early warning before the turn. At-turn alert = second beep right at the turn. Each can be switched on/off separately.</string>
+    <string name="help_meters">Meters: the alert fires when the distance to the next turn drops below this value.</string>
+    <string name="help_frequency">Hz: tone pitch. Lower = softer, higher = sharper.</string>
+    <string name="help_duration">ms: length of a single beep.</string>
+    <string name="help_beeps">Beeps: how many beeps are played in a row.</string>
+    <string name="help_enabled">Enabled: master switch for all alerts.</string>
+    <string name="help_in_ride">In-ride only: alerts only while a ride is being recorded.</string>
+    <string name="help_wake">Wake up screen: turns the display on when an alert fires.</string>
+    <string name="help_stock">Important: disable the stock TBT sound under Profiles → Audio Alerts → Turn By Turn, otherwise you will hear both.</string>
 </resources>
