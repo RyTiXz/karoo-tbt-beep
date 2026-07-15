@@ -23,8 +23,9 @@ data class TbtSettings(
     val enabled: Boolean = true,
     val inRideOnly: Boolean = false,
     val wakeUpScreen: Boolean = false,
-    val farAlert: TurnAlert = TurnAlert(100, Beep(800, 100, 1)),
-    val nearAlert: TurnAlert = TurnAlert(20, Beep(800, 100, 2)),
+    val earlyAlert: TurnAlert = TurnAlert(1000, Beep(800, 100, 3), enabled = false),
+    val farAlert: TurnAlert = TurnAlert(250, Beep(800, 100, 2)),
+    val nearAlert: TurnAlert = TurnAlert(50, Beep(800, 100, 1)),
 ) {
     companion object {
         val defaultSettings = jsonWithUnknownKeys.encodeToString(TbtSettings())

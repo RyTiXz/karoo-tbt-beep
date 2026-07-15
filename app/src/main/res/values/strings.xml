@@ -2,6 +2,7 @@
     <string name="app_name">TBT Beep</string>
     <string name="extension_name">tbtbeep</string>
 
+    <string name="early_alert">Early alert</string>
     <string name="approach_alert">Approach alert</string>
     <string name="at_turn_alert">At-turn alert</string>
 
@@ -19,7 +20,7 @@
     <string name="settings_saved">Settings saved successfully.</string>
 
     <string name="help_title">How it works</string>
-    <string name="help_alerts">Approach alert = early warning before the turn. At-turn alert = second beep right at the turn. Each can be switched on/off separately.</string>
+    <string name="help_alerts">Early alert = optional long-range heads-up. Approach alert = warning before the turn. At-turn alert = beep right at the turn. Each can be switched on/off separately. If the next turn is already closer than a threshold when it comes up, that threshold is skipped instead of beeping late.</string>
     <string name="help_meters">Meters: the alert fires when the distance to the next turn drops below this value.</string>
     <string name="help_frequency">Hz: tone pitch. Lower = softer, higher = sharper.</string>
     <string name="help_duration">ms: length of a single beep.</string>

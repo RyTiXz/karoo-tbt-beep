@@ -85,6 +85,55 @@ class TurnAlertEngineTest {
     }
 
     @Test
+    fun `consecutive close turns do not catch up missed thresholds`() {
+        val engine = TurnAlertEngine()
+        engine.onDistance(500.0, settings)
+        assertEquals(far, engine.onDistance(90.0, settings))
+        assertEquals(near, engine.onDistance(15.0, settings))
+        // Naechster Turn taucht bereits innerhalb der Far-Schwelle auf (80 m < 100 m):
+        // Far gilt als verpasst und darf nicht nachgeholt werden
+        assertNull(engine.onDistance(80.0, settings))
+        assertNull(engine.onDistance(50.0, settings))
+        assertEquals(near, engine.onDistance(18.0, settings))
+    }
+
+    @Test
+    fun `navigation starting inside far zone skips far alert`() {
+        val engine = TurnAlertEngine()
+        assertNull(engine.onDistance(60.0, settings))
+        assertEquals(near, engine.onDistance(15.0, settings))
+    }
+
+    @Test
+    fun `navigation starting inside near zone stays silent for that turn`() {
+        val engine = TurnAlertEngine()
+        assertNull(engine.onDistance(10.0, settings))
+        assertNull(engine.onDistance(5.0, settings))
+        assertNull(engine.onDistance(400.0, settings))
+        assertEquals(far, engine.onDistance(95.0, settings))
+    }
+
+    @Test
+    fun `early alert fires before far and near when enabled`() {
+        val engine = TurnAlertEngine()
+        val early = TurnAlert(1000, Beep(800, 100, 3), enabled = true)
+        val withEarly = settings.copy(earlyAlert = early)
+        assertNull(engine.onDistance(1500.0, withEarly))
+        assertEquals(early, engine.onDistance(950.0, withEarly))
+        assertNull(engine.onDistance(800.0, withEarly))
+        assertEquals(far, engine.onDistance(95.0, withEarly))
+        assertEquals(near, engine.onDistance(15.0, withEarly))
+    }
+
+    @Test
+    fun `early alert disabled by default stays silent`() {
+        val engine = TurnAlertEngine()
+        assertNull(engine.onDistance(1500.0, settings))
+        assertNull(engine.onDistance(900.0, settings))
+        assertEquals(far, engine.onDistance(95.0, settings))
+    }
+
+    @Test
     fun `invalid distances are ignored`() {
         val engine = TurnAlertEngine()
         assertNull(engine.onDistance(Double.NaN, settings))

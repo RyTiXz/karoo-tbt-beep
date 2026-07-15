@@ -12,10 +12,11 @@ Inspired by [kxradar](https://github.com/itxsvv/kxradar), which does the same fo
 
 The extension streams the Karoo's *Distance to Next Turn* value
 (`DISTANCE_TO_NEXT_TURN` from the official [karoo-ext SDK](https://github.com/hammerheadnav/karoo-ext))
-and fires two independent alerts:
+and fires up to three independent alerts:
 
-- **Approach alert** — e.g. 100 m before the turn (default: 1 beep)
-- **At-turn alert** — e.g. 20 m before the turn (default: 2 beeps)
+- **Early alert** — optional long-range heads-up, e.g. 1000 m (default: off, 3 beeps)
+- **Approach alert** — e.g. 250 m before the turn (default: 2 beeps)
+- **At-turn alert** — e.g. 50 m before the turn (default: 1 beep)
 
 For each alert you can configure the trigger distance, tone frequency (Hz),
 duration (ms) and beep count. Lower frequency + shorter duration = quieter.
@@ -23,9 +24,11 @@ Sounds play through the internal beeper via the SDK (`PlayBeepPattern`);
 there is no hardware volume control on the Karoo, so perceived loudness is
 shaped by frequency and duration.
 
-The approach-alert distance should be larger than the at-turn distance.
-Alerts re-arm automatically after each turn (detected by the distance value
-jumping up) and after reroutes.
+Thresholds should be configured in descending order (early > approach >
+at-turn). Alerts re-arm automatically after each turn (detected by the
+distance value jumping up) and after reroutes. On consecutive close turns,
+thresholds the rider is already inside of are skipped instead of beeping
+retroactively — only what still lies ahead is announced.
 
 ## Requirements
 

@@ -58,6 +58,7 @@ fun MainScreen() {
     var uiEnabled by remember { mutableStateOf(true) }
     var uiInRideOnly by remember { mutableStateOf(false) }
     var uiWakeUpScreen by remember { mutableStateOf(false) }
+    var uiEarlyAlert by remember { mutableStateOf(TbtSettings().earlyAlert) }
     var uiFarAlert by remember { mutableStateOf(TbtSettings().farAlert) }
     var uiNearAlert by remember { mutableStateOf(TbtSettings().nearAlert) }
 
@@ -67,6 +68,7 @@ fun MainScreen() {
                 enabled = uiEnabled,
                 inRideOnly = uiInRideOnly,
                 wakeUpScreen = uiWakeUpScreen,
+                earlyAlert = uiEarlyAlert,
                 farAlert = uiFarAlert,
                 nearAlert = uiNearAlert,
             )
@@ -80,6 +82,7 @@ fun MainScreen() {
             uiEnabled = settings.enabled
             uiInRideOnly = settings.inRideOnly
             uiWakeUpScreen = settings.wakeUpScreen
+            uiEarlyAlert = settings.earlyAlert
             uiFarAlert = settings.farAlert
             uiNearAlert = settings.nearAlert
         }
@@ -132,11 +135,22 @@ fun MainScreen() {
                 .height(5.dp)
         ) {}
         DrawAlertPanel(
+            karooSystem, scope, stringResource(R.string.early_alert), uiEarlyAlert, pattern,
+            onChange = { changed ->
+                val toggled = changed.enabled != uiEarlyAlert.enabled
+                uiEarlyAlert = changed
+                // Der An/Aus-Schalter speichert sofort, Zahlenfelder erst via Save
+                if (toggled) saveUISettings()
+            },
+        )
+        HorizontalDivider(
+            thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)
+        )
+        DrawAlertPanel(
             karooSystem, scope, stringResource(R.string.approach_alert), uiFarAlert, pattern,
             onChange = { changed ->
                 val toggled = changed.enabled != uiFarAlert.enabled
                 uiFarAlert = changed
-                // Der An/Aus-Schalter speichert sofort, Zahlenfelder erst via Save
                 if (toggled) saveUISettings()
             },
         )

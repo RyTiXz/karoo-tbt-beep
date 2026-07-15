@@ -2,6 +2,7 @@
     <string name="app_name">TBT Beep</string>
     <string name="extension_name">tbtbeep</string>
 
+    <string name="early_alert">Frühwarnung</string>
     <string name="approach_alert">Vorwarnung</string>
     <string name="at_turn_alert">Am Abzweig</string>
 
@@ -19,7 +20,7 @@
     <string name="settings_saved">Einstellungen gespeichert.</string>
 
     <string name="help_title">So funktioniert es</string>
-    <string name="help_alerts">Vorwarnung = früher Hinweis vor dem Abzweig. Am Abzweig = zweiter Ton direkt am Abzweig. Beide sind einzeln schaltbar.</string>
+    <string name="help_alerts">Frühwarnung = optionaler Hinweis auf lange Distanz. Vorwarnung = Warnung vor dem Abzweig. Am Abzweig = Ton direkt am Abzweig. Alle einzeln schaltbar. Ist der nächste Abzweig beim Auftauchen schon näher als eine Schwelle, wird diese übersprungen statt verspätet zu piepen.</string>
     <string name="help_meters">Meter: Der Ton kommt, sobald die Distanz zum nächsten Abzweig unter diesen Wert fällt.</string>
     <string name="help_frequency">Hz: Tonhöhe. Niedriger = leiser/weicher, höher = schärfer.</string>
     <string name="help_duration">ms: Länge eines einzelnen Tons.</string>
