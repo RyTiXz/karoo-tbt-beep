@@ -16,7 +16,7 @@ class TurnAlertEngineTest {
     // Realistische Annaeherung: Schritte klein genug, um weder den
     // Turn-Passed-Jump (+50 m) noch den Reroute-Drop (-150 m) auszuloesen
     private fun TurnAlertEngine.approach(s: TbtSettings, vararg distances: Double): List<TurnAlert> =
-        distances.mapNotNull { onDistance(it, s) }
+        distances.map { onDistance(it, s) }.filterNotNull()
 
     @Test
     fun `far alert fires exactly once while approaching`() {
