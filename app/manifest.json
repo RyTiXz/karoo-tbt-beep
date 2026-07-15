@@ -7,5 +7,5 @@
   "latestVersion": "0.4.1",
   "developer": "https://github.com/RyTiXz",
   "description": "Configurable quiet turn-by-turn beeps for Hammerhead Karoo.",
-  "releaseNotes": "Early alert on by default (1000/250/50), saved settings are now update-proof full snapshots"
+  "releaseNotes": "Saved settings are now update-proof full snapshots; early alert prefilled with 1000 m (off by default)"
 }
