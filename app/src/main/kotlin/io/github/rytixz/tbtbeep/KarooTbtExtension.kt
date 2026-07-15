@@ -14,23 +14,14 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
-class KarooTbtExtension : KarooExtension("tbtbeep", "0.2.0") {
+class KarooTbtExtension : KarooExtension("tbtbeep", "0.3.0") {
     companion object {
         const val TAG = "tbtbeep"
-
-        // Distanz-Sprung nach oben = Turn passiert / naechster Turn -> Alerts scharf schalten
-        private const val RESET_JUMP_M = 50.0
-
-        // Grosser Sprung nach unten = Reroute/neue Route -> ebenfalls scharf schalten
-        private const val REROUTE_DROP_M = 150.0
     }
 
     private lateinit var karooSystem: KarooSystemService
     private var serviceJob: Job? = null
-
-    private var lastDistance: Double? = null
-    private var firedFar = false
-    private var firedNear = false
+    private val engine = TurnAlertEngine()
 
     override fun onCreate() {
         super.onCreate()
@@ -67,39 +58,11 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.2.0") {
             }
             .collect { (values, rideState, settings) ->
                 values[DataType.Field.DISTANCE_TO_NEXT_TURN]?.let { distance ->
-                    handleTurnDistance(distance, rideState, settings)
+                    engine.onDistance(distance, settings)?.let { alert ->
+                        fireAlert(alert, rideState, settings)
+                    }
                 }
             }
-    }
-
-    private fun handleTurnDistance(
-        distance: Double,
-        rideState: RideState,
-        settings: TbtSettings,
-    ) {
-        if (distance < 0) return
-
-        lastDistance?.let { last ->
-            if (distance > last + RESET_JUMP_M || last - distance > REROUTE_DROP_M) {
-                firedFar = false
-                firedNear = false
-            }
-        }
-        lastDistance = distance
-
-        if (!settings.enabled) return
-
-        val far = settings.farAlert
-        val near = settings.nearAlert
-
-        if (near.enabled && !firedNear && distance <= near.distance) {
-            firedNear = true
-            firedFar = true
-            fireAlert(near, rideState, settings)
-        } else if (far.enabled && !firedFar && distance <= far.distance) {
-            firedFar = true
-            fireAlert(far, rideState, settings)
-        }
     }
 
     private fun fireAlert(

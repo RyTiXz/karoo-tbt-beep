@@ -133,14 +133,23 @@ fun MainScreen() {
         ) {}
         DrawAlertPanel(
             karooSystem, scope, stringResource(R.string.approach_alert), uiFarAlert, pattern,
-            onChange = { uiFarAlert = it },
+            onChange = { changed ->
+                val toggled = changed.enabled != uiFarAlert.enabled
+                uiFarAlert = changed
+                // Der An/Aus-Schalter speichert sofort, Zahlenfelder erst via Save
+                if (toggled) saveUISettings()
+            },
         )
         HorizontalDivider(
             thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)
         )
         DrawAlertPanel(
             karooSystem, scope, stringResource(R.string.at_turn_alert), uiNearAlert, pattern,
-            onChange = { uiNearAlert = it },
+            onChange = { changed ->
+                val toggled = changed.enabled != uiNearAlert.enabled
+                uiNearAlert = changed
+                if (toggled) saveUISettings()
+            },
         )
         HorizontalDivider(
             thickness = 2.dp, modifier = Modifier.padding(vertical = 8.dp)

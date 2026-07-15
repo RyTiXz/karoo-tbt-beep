@@ -55,16 +55,34 @@ play button, and tap **Save**. Options:
 - **In-ride only** — only beep while a ride is being recorded
 - **Wake up screen** — turn the screen on when an alert fires
 
+## Privacy
+
+The app requests no Android permissions, contains no network code and collects
+no data. Settings are stored locally on the device (Jetpack DataStore) and
+never leave it. The only inputs are the Karoo's own distance-to-next-turn and
+ride-state streams via the official SDK; the only output is the internal beeper.
+
 ## Building
 
-CI (GitHub Actions) builds the APK on every push. Locally you need JDK 17 and
-the Android SDK; `karoo-ext` is resolved from Maven Central (with GitHub
-Packages as fallback — see `settings.gradle.kts`).
+CI (GitHub Actions) builds and unit-tests the app on every push
+(`./gradlew build`). Locally you need JDK 17 and the Android SDK; `karoo-ext`
+is resolved from Maven Central (with GitHub Packages as fallback — see
+`settings.gradle.kts`).
 
-If no release keystore is configured (repository secrets `KEYSTORE_BASE64`,
-`KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`), release builds are signed
-with the debug key. Note: debug-signed builds from different machines/CI runs
-have different signatures, so updating may require uninstalling first.
+Releases since v0.3.0 are signed with a fixed release key (repository secrets
+`KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS`, `KEY_PASSWORD`), so
+updates install in place. If you are upgrading from an older debug-signed
+build (v0.1.0/v0.2.0), uninstall once before installing.
+
+### Release checklist
+
+1. Bump the version in three places: `versionCode`/`versionName` in
+   `app/build.gradle.kts`, the `KarooExtension` constructor in
+   `KarooTbtExtension.kt`, and `latestVersionCode`/`latestVersion` in
+   `app/manifest.json`.
+2. Push to `main`, wait for CI to pass.
+3. Draft a GitHub release with tag `vX.Y.Z` — CI attaches the APK,
+   `manifest.json` and icon automatically.
 
 ## Credits
 

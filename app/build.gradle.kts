@@ -18,8 +18,8 @@ android {
         applicationId = "io.github.rytixz.tbtbeep"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "0.2.0"
+        versionCode = 3
+        versionName = "0.3.0"
     }
 
     signingConfigs {
@@ -71,4 +71,5 @@ dependencies {
     implementation(libs.bundles.compose.ui)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.preferences)
+    testImplementation(libs.junit)
 }
