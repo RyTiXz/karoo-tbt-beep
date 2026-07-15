@@ -7,10 +7,17 @@
     <string name="at_turn_alert">Am Abzweig</string>
 
     <string name="label_distance">Meter</string>
-    <string name="label_frequency">Hz</string>
     <string name="label_duration">ms</string>
-    <string name="label_beeps">Töne</string>
-    <string name="test_sound">Ton testen</string>
+    <string name="test_sound">Test</string>
+
+    <string name="pattern_label">Ton</string>
+    <string name="pattern_single">Einzel</string>
+    <string name="pattern_double">Doppel</string>
+    <string name="pattern_triple">Dreifach</string>
+    <string name="pattern_up">Aufsteigend</string>
+    <string name="pattern_down">Absteigend</string>
+    <string name="pattern_custom">Eigene</string>
+    <string name="custom_label">Sequenz Hz:ms (0:ms = Pause)</string>
 
     <string name="enabled">Aktiviert</string>
     <string name="in_ride_only">Nur während Fahrt</string>
@@ -22,9 +29,10 @@
     <string name="help_title">So funktioniert es</string>
     <string name="help_alerts">Frühwarnung = optionaler Hinweis auf lange Distanz. Vorwarnung = Warnung vor dem Abzweig. Am Abzweig = Ton direkt am Abzweig. Alle einzeln schaltbar. Ist der nächste Abzweig beim Auftauchen schon näher als eine Schwelle, wird diese übersprungen statt verspätet zu piepen.</string>
     <string name="help_meters">Meter: Der Ton kommt, sobald die Distanz zum nächsten Abzweig unter diesen Wert fällt.</string>
-    <string name="help_frequency">Hz: Tonhöhe. Niedriger = leiser/weicher, höher = schärfer.</string>
+    <string name="help_frequency">Hz-Schieber: Tonhöhe. Niedriger = leiser/weicher, höher = schärfer.</string>
     <string name="help_duration">ms: Länge eines einzelnen Tons.</string>
-    <string name="help_beeps">Töne: Anzahl der Töne hintereinander.</string>
+    <string name="help_pattern">Ton: Einzel-/Doppel-/Dreifach-Beep oder auf-/absteigender Zweiklang. Bei "Eigene" gibst du die Sequenz als Hz:ms-Paare mit Komma getrennt ein, 0:ms erzeugt eine Pause.</string>
+    <string name="help_timing">Die Töne werden mit deiner aktuellen Geschwindigkeit getimt und treffen so genau die eingestellte Distanz.</string>
     <string name="help_enabled">Aktiviert: Hauptschalter für alle Alerts.</string>
     <string name="help_in_ride">Nur während Fahrt: Töne nur bei laufender Aufzeichnung.</string>
     <string name="help_wake">Display aufwecken: Schaltet das Display ein, wenn ein Alert kommt.</string>

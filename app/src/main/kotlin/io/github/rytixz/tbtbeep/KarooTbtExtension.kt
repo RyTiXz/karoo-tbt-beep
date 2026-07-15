@@ -10,11 +10,13 @@ import io.hammerhead.karooext.models.TurnScreenOn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
-class KarooTbtExtension : KarooExtension("tbtbeep", "0.4.1") {
+class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.0") {
     companion object {
         const val TAG = "tbtbeep"
     }
@@ -22,6 +24,10 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.4.1") {
     private lateinit var karooSystem: KarooSystemService
     private var serviceJob: Job? = null
     private val engine = TurnAlertEngine()
+
+    @Volatile
+    private var lastSpeedMps: Double? = null
+    private var pendingBeep: Job? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -33,18 +39,28 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.4.1") {
                     Log.i(TAG, "karooSystem connected")
                 }
             }
-            startMonitoring()
+            coroutineScope {
+                launch { monitorSpeed() }
+                launch { monitorTurnDistance() }
+            }
         }
     }
 
     override fun onDestroy() {
+        pendingBeep?.cancel()
         serviceJob?.cancel()
         serviceJob = null
         karooSystem.disconnect()
         super.onDestroy()
     }
 
-    private suspend fun startMonitoring() {
+    private suspend fun monitorSpeed() {
+        karooSystem.streamDataFlow(DataType.Type.SPEED)
+            .mapNotNull { (it as? StreamState.Streaming)?.dataPoint?.values?.get(DataType.Field.SPEED) }
+            .collect { lastSpeedMps = it }
+    }
+
+    private suspend fun CoroutineScope.monitorTurnDistance() {
         val settingsFlow = TbtSettingsService(applicationContext).settings
         val rideStateFlow = karooSystem.streamRideState()
 
@@ -58,8 +74,21 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.4.1") {
             }
             .collect { (values, rideState, settings) ->
                 values[DataType.Field.DISTANCE_TO_NEXT_TURN]?.let { distance ->
-                    engine.onDistance(distance, settings)?.let { alert ->
-                        fireAlert(alert, rideState, settings)
+                    val output = engine.onDistance(distance, lastSpeedMps, settings)
+                    if (output.cancelPending) {
+                        pendingBeep?.cancel()
+                        pendingBeep = null
+                    }
+                    output.alert?.let { alert ->
+                        if (output.delayMs <= 0) {
+                            fireAlert(alert, rideState, settings)
+                        } else {
+                            pendingBeep?.cancel()
+                            pendingBeep = launch {
+                                delay(output.delayMs)
+                                fireAlert(alert, rideState, settings)
+                            }
+                        }
                     }
                 }
             }
@@ -72,10 +101,10 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.4.1") {
     ) {
         val allowed = !settings.inRideOnly || rideState is RideState.Recording
         if (!allowed) return
-        Log.i(TAG, "Turn alert fired (threshold ${alert.distance}m)")
+        Log.i(TAG, "Turn alert fired (threshold ${alert.distance}m, speed=$lastSpeedMps)")
         if (settings.wakeUpScreen) {
             karooSystem.dispatch(TurnScreenOn)
         }
-        karooSystem.beep(alert.beep.frequency, alert.beep.duration, alert.beep.count)
+        karooSystem.playBeep(alert.beep)
     }
 }

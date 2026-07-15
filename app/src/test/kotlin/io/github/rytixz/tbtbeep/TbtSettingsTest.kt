@@ -30,6 +30,45 @@ class TbtSettingsTest {
     }
 
     @Test
+    fun `tone patterns produce expected sequences`() {
+        val base = Beep(frequency = 800, duration = 100)
+        assertEquals(listOf(800 to 100), base.copy(pattern = TonePattern.SINGLE).tones())
+        assertEquals(
+            listOf(800 to 100, 0 to Beep.GAP_MS, 800 to 100),
+            base.copy(pattern = TonePattern.DOUBLE).tones(),
+        )
+        assertEquals(
+            listOf(800 to 100, 0 to Beep.GAP_MS, 1200 to 100),
+            base.copy(pattern = TonePattern.UP).tones(),
+        )
+        assertEquals(
+            listOf(1200 to 100, 0 to Beep.GAP_MS, 800 to 100),
+            base.copy(pattern = TonePattern.DOWN).tones(),
+        )
+    }
+
+    @Test
+    fun `legacy count maps to pattern without pattern field`() {
+        assertEquals(TonePattern.DOUBLE, Beep(count = 2).effectivePattern())
+        assertEquals(TonePattern.TRIPLE, Beep(count = 3).effectivePattern())
+        // Legacy count > 3 bleibt als Wiederholung erhalten
+        assertEquals(5, Beep(count = 5).tones().count { it.first > 0 })
+    }
+
+    @Test
+    fun `custom sequences are parsed defensively`() {
+        assertEquals(
+            listOf(800 to 100, 0 to 80, 1200 to 100),
+            Beep.parseCustomSequence("800:100, 0:80, 1200:100"),
+        )
+        assertEquals(emptyList<Pair<Int, Int>>(), Beep.parseCustomSequence("kaputt"))
+        assertEquals(listOf(800 to 100), Beep.parseCustomSequence("800:100, unsinn, 500:-20"))
+        // Ungueltige Custom-Sequenz faellt auf count-Wiederholung zurueck
+        val fallback = Beep(count = 2, pattern = TonePattern.CUSTOM, custom = "xyz").tones()
+        assertEquals(2, fallback.count { it.first > 0 })
+    }
+
+    @Test
     fun `unknown fields from future versions are tolerated`() {
         val json = """{"enabled":true,"someFutureField":42}"""
         val decoded = jsonWithUnknownKeys.decodeFromString<TbtSettings>(json)

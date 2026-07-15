@@ -51,12 +51,8 @@ fun KarooSystemService.streamRideState(): Flow<RideState> {
     }
 }
 
-fun KarooSystemService.beep(freq: Int, duration: Int, count: Int = 1) {
-    if (freq <= 0 || duration <= 0 || count <= 0) return
-    val beepList = mutableListOf(PlayBeepPattern.Tone(freq, duration))
-    repeat(count - 1) {
-        beepList.add(PlayBeepPattern.Tone(0, 80))
-        beepList.add(PlayBeepPattern.Tone(freq, duration))
-    }
-    dispatch(PlayBeepPattern(beepList))
+fun KarooSystemService.playBeep(beep: Beep) {
+    val tones = beep.tones().map { (freq, dur) -> PlayBeepPattern.Tone(freq, dur) }
+    if (tones.isEmpty()) return
+    dispatch(PlayBeepPattern(tones))
 }

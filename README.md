@@ -18,11 +18,17 @@ and fires up to three independent alerts:
 - **Approach alert** — e.g. 250 m before the turn (default: 2 beeps)
 - **At-turn alert** — e.g. 50 m before the turn (default: 1 beep)
 
-For each alert you can configure the trigger distance, tone frequency (Hz),
-duration (ms) and beep count. Lower frequency + shorter duration = quieter.
-Sounds play through the internal beeper via the SDK (`PlayBeepPattern`);
-there is no hardware volume control on the Karoo, so perceived loudness is
-shaped by frequency and duration.
+For each alert you can configure the trigger distance, tone frequency
+(slider), duration (ms) and a tone pattern: single, double or triple beep,
+rising or falling two-tone, or a fully custom sequence entered as `Hz:ms`
+pairs (`800:100,0:80,1200:100` — `0:ms` inserts a pause). Lower frequency +
+shorter duration = quieter. Sounds play through the internal beeper via the
+SDK (`PlayBeepPattern`); there is no hardware volume control on the Karoo,
+so perceived loudness is shaped by frequency and duration.
+
+Beeps are timed using your current speed: when a threshold crossing falls
+between two data updates, the beep is scheduled to land right on the
+configured distance instead of firing up to a second late.
 
 Thresholds should be configured in descending order (early > approach >
 at-turn). Alerts re-arm automatically after each turn (detected by the

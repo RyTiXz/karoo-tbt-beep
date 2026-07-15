@@ -13,10 +13,13 @@ class TurnAlertEngineTest {
         nearAlert = near,
     )
 
-    // Realistische Annaeherung: Schritte klein genug, um weder den
-    // Turn-Passed-Jump (+50 m) noch den Reroute-Drop (-150 m) auszuloesen
+    // Realistische Annaeherung ohne Speed-Signal: Schritte klein genug, um weder
+    // den Turn-Passed-Jump (+50 m) noch den Reroute-Drop (-150 m) auszuloesen
     private fun TurnAlertEngine.approach(s: TbtSettings, vararg distances: Double): List<TurnAlert> =
-        distances.map { onDistance(it, s) }.filterNotNull()
+        distances.map { onDistance(it, null, s).alert }.filterNotNull()
+
+    private fun TurnAlertEngine.onDistance(distance: Double, s: TbtSettings): TurnAlert? =
+        onDistance(distance, null, s).alert
 
     @Test
     fun `far alert fires exactly once while approaching`() {
@@ -140,5 +143,59 @@ class TurnAlertEngineTest {
         assertNull(engine.onDistance(-5.0, settings))
         val fired = engine.approach(settings, 500.0, 380.0, 260.0, 140.0, 95.0)
         assertEquals(listOf(far), fired)
+    }
+
+    @Test
+    fun `prediction schedules beep before threshold is crossed`() {
+        val engine = TurnAlertEngine()
+        engine.approach(settings, 500.0, 380.0, 260.0, 140.0)
+        // 10 m/s, Schwelle 100 m, aktuell 110 m -> Beep in 1000 ms geplant
+        val out = engine.onDistance(110.0, 10.0, settings)
+        assertEquals(far, out.alert)
+        assertEquals(1000L, out.delayMs)
+        // Naechstes Sample unterhalb der Schwelle darf nicht erneut feuern
+        assertNull(engine.onDistance(98.0, 10.0, settings).alert)
+    }
+
+    @Test
+    fun `prediction beyond horizon waits for the crossing`() {
+        val engine = TurnAlertEngine()
+        engine.approach(settings, 500.0, 380.0, 260.0, 140.0)
+        // 2 m/s: Schwelle erst in 5 s -> keine Planung, normales Feuern beim Kreuzen
+        assertNull(engine.onDistance(110.0, 2.0, settings).alert)
+        assertEquals(far, engine.onDistance(98.0, 2.0, settings).alert)
+    }
+
+    @Test
+    fun `implausible speed disables prediction`() {
+        val engine = TurnAlertEngine()
+        engine.approach(settings, 500.0, 380.0, 260.0, 140.0)
+        assertNull(engine.onDistance(110.0, 50.0, settings).alert)
+        assertNull(engine.onDistance(110.0, 0.0, settings).alert)
+        assertEquals(far, engine.onDistance(98.0, 50.0, settings).alert)
+    }
+
+    @Test
+    fun `turn context switch requests cancel of pending beep`() {
+        val engine = TurnAlertEngine()
+        engine.approach(settings, 500.0, 380.0, 260.0, 140.0)
+        assertEquals(far, engine.onDistance(110.0, 10.0, settings).alert)
+        // Turn passiert bevor der geplante Beep faellig war -> cancel signalisieren
+        val out = engine.onDistance(400.0, 10.0, settings)
+        assertNull(out.alert)
+        assertEquals(true, out.cancelPending)
+    }
+
+    @Test
+    fun `prediction respects disabled alerts`() {
+        val engine = TurnAlertEngine()
+        val farOff = settings.copy(farAlert = far.copy(enabled = false))
+        engine.approach(farOff, 500.0, 380.0, 260.0, 140.0)
+        assertNull(engine.onDistance(110.0, 10.0, farOff).alert)
+        // Naechste aktive Schwelle (near, 20 m) wird geplant, sobald sie in Reichweite ist
+        engine.approach(farOff, 90.0, 60.0)
+        val out = engine.onDistance(28.0, 10.0, farOff)
+        assertEquals(near, out.alert)
+        assertEquals(800L, out.delayMs)
     }
 }
