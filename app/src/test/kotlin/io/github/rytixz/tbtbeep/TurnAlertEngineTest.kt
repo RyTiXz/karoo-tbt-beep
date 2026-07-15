@@ -109,9 +109,17 @@ class TurnAlertEngineTest {
     }
 
     @Test
-    fun `early alert disabled by default stays silent`() {
+    fun `early alert enabled by default fires at long range`() {
         val engine = TurnAlertEngine()
         val fired = engine.approach(settings, 1100.0, 950.0, 810.0, 670.0, 530.0, 390.0, 250.0, 110.0, 95.0)
+        assertEquals(listOf(settings.earlyAlert, far), fired)
+    }
+
+    @Test
+    fun `early alert can be disabled`() {
+        val engine = TurnAlertEngine()
+        val earlyOff = settings.copy(earlyAlert = settings.earlyAlert.copy(enabled = false))
+        val fired = engine.approach(earlyOff, 1100.0, 950.0, 810.0, 670.0, 530.0, 390.0, 250.0, 110.0, 95.0)
         assertEquals(listOf(far), fired)
     }
 

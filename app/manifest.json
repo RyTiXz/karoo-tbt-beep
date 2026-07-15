@@ -3,9 +3,9 @@
   "packageName": "io.github.rytixz.tbtbeep",
   "iconUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/karoo-tbtbeep.png",
   "latestApkUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/app-release.apk",
-  "latestVersionCode": 4,
-  "latestVersion": "0.4.0",
+  "latestVersionCode": 5,
+  "latestVersion": "0.4.1",
   "developer": "https://github.com/RyTiXz",
   "description": "Configurable quiet turn-by-turn beeps for Hammerhead Karoo.",
-  "releaseNotes": "Optional third early alert, no more catch-up beeps on consecutive turns, ride-tested defaults (250 m / 50 m)"
+  "releaseNotes": "Early alert on by default (1000/250/50), saved settings are now update-proof full snapshots"
 }

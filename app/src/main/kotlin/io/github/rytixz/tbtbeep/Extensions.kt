@@ -13,7 +13,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.serialization.json.Json
 
-val jsonWithUnknownKeys = Json { ignoreUnknownKeys = true }
+// encodeDefaults: Settings immer als Voll-Snapshot speichern, damit spaetere
+// Default-Aenderungen gespeicherte User-Werte nie stillschweigend veraendern
+val jsonWithUnknownKeys = Json {
+    ignoreUnknownKeys = true
+    encodeDefaults = true
+}
 
 suspend fun saveSettings(context: Context, settings: TbtSettings) {
     TbtSettingsService(context).save(settings)

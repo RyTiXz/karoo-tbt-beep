@@ -23,7 +23,7 @@ data class TbtSettings(
     val enabled: Boolean = true,
     val inRideOnly: Boolean = false,
     val wakeUpScreen: Boolean = false,
-    val earlyAlert: TurnAlert = TurnAlert(1000, Beep(800, 100, 3), enabled = false),
+    val earlyAlert: TurnAlert = TurnAlert(1000, Beep(800, 100, 3)),
     val farAlert: TurnAlert = TurnAlert(250, Beep(800, 100, 2)),
     val nearAlert: TurnAlert = TurnAlert(50, Beep(800, 100, 1)),
 ) {

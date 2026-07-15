@@ -14,7 +14,7 @@ The extension streams the Karoo's *Distance to Next Turn* value
 (`DISTANCE_TO_NEXT_TURN` from the official [karoo-ext SDK](https://github.com/hammerheadnav/karoo-ext))
 and fires up to three independent alerts:
 
-- **Early alert** — optional long-range heads-up, e.g. 1000 m (default: off, 3 beeps)
+- **Early alert** — long-range heads-up, e.g. 1000 m (default: 3 beeps)
 - **Approach alert** — e.g. 250 m before the turn (default: 2 beeps)
 - **At-turn alert** — e.g. 50 m before the turn (default: 1 beep)
 
