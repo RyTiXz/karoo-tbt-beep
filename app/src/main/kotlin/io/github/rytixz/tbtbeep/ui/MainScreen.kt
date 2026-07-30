@@ -1,9 +1,11 @@
 package io.github.rytixz.tbtbeep.ui
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -23,6 +26,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -118,6 +122,7 @@ fun MainScreen() {
         )
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -215,7 +220,8 @@ fun MainScreen() {
         helpLine(stringResource(R.string.help_in_ride))
         helpLine(stringResource(R.string.help_wake))
         helpLine(stringResource(R.string.help_stock))
-        Spacer(modifier = Modifier.size(10.dp))
+        // Platz fuer den schwebenden Zurueck-Button, damit er die Hilfe nicht verdeckt
+        Spacer(modifier = Modifier.size(56.dp))
         if (savedDialogVisible) {
             AlertDialog(
                 onDismissRequest = { savedDialogVisible = false },
@@ -227,5 +233,17 @@ fun MainScreen() {
                 text = { Text(stringResource(R.string.settings_saved)) }
             )
         }
+    }
+    SmallFloatingActionButton(
+        onClick = { (ctx as? Activity)?.finish() },
+        modifier = Modifier
+            .align(Alignment.BottomStart)
+            .padding(10.dp),
+    ) {
+        Icon(
+            Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back),
+        )
+    }
     }
 }
