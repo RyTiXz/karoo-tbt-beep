@@ -13,8 +13,8 @@ class TurnAlertEngineTest {
         nearAlert = near,
     )
 
-    // Realistische Annaeherung ohne Speed-Signal: Schritte klein genug, um weder
-    // den Turn-Passed-Jump (+50 m) noch den Reroute-Drop (-150 m) auszuloesen
+    // Realistic approach without a speed signal: steps small enough to trigger
+    // neither the turn-passed jump (+50 m) nor the reroute drop (-150 m)
     private fun TurnAlertEngine.approach(s: TbtSettings, vararg distances: Double): List<TurnAlert> =
         distances.map { onDistance(it, null, s).alert }.filterNotNull()
 
@@ -39,7 +39,7 @@ class TurnAlertEngineTest {
     fun `re-arms after turn passed (distance jumps up)`() {
         val engine = TurnAlertEngine()
         engine.approach(settings, 500.0, 380.0, 260.0, 140.0, 95.0, 60.0, 18.0)
-        // Turn passiert, naechster Turn weit weg -> Sprung nach oben
+        // Turn passed, next turn far away -> jump up
         val fired = engine.approach(settings, 400.0, 280.0, 160.0, 99.0)
         assertEquals(listOf(far), fired)
     }
@@ -48,7 +48,7 @@ class TurnAlertEngineTest {
     fun `re-arm after reroute drop keeps future thresholds armed`() {
         val engine = TurnAlertEngine()
         engine.approach(settings, 500.0, 400.0)
-        // Reroute: Distanz faellt schlagartig um mehr als 150 m, bleibt aber vor der Schwelle
+        // Reroute: distance drops sharply by more than 150 m but stays before the threshold
         val fired = engine.approach(settings, 220.0, 120.0, 95.0, 18.0)
         assertEquals(listOf(far, near), fired)
     }

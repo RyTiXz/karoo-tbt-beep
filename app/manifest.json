@@ -3,9 +3,9 @@
   "packageName": "io.github.rytixz.tbtbeep",
   "iconUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/karoo-tbtbeep.png",
   "latestApkUrl": "https://github.com/RyTiXz/karoo-tbt-beep/releases/latest/download/app-release.apk",
-  "latestVersionCode": 7,
-  "latestVersion": "0.5.1",
+  "latestVersionCode": 8,
+  "latestVersion": "1.0.0",
   "developer": "https://github.com/RyTiXz",
   "description": "Configurable quiet turn-by-turn beeps for Hammerhead Karoo.",
-  "releaseNotes": "Floating back button (bottom-left, Karoo convention) to exit the app without the hardware button"
+  "releaseNotes": "First public release: thread-safe speed handling, settings changes now respected for predicted beeps"
 }

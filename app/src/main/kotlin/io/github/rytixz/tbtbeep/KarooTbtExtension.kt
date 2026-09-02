@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicReference
 
-class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
+class KarooTbtExtension : KarooExtension("tbtbeep", "1.0.0") {
     companion object {
         const val TAG = "tbtbeep"
     }

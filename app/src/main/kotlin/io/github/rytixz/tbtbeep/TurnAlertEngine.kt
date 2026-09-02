@@ -1,10 +1,10 @@
 package io.github.rytixz.tbtbeep
 
 /**
- * Ergebnis eines Distanz-Samples: sofort feuern (delayMs = 0), zeitversetzt
- * feuern (delayMs > 0, per Geschwindigkeit prognostizierter Schwellen-Moment)
- * oder nichts. cancelPending signalisiert einen Kontextwechsel (Turn passiert,
- * Reroute) — ein noch nicht abgespielter geplanter Beep ist dann hinfaellig.
+ * Result of a distance sample: fire immediately (delayMs = 0), fire later
+ * (delayMs > 0 — the threshold moment predicted from current speed), or
+ * nothing. cancelPending signals a context change (turn passed, reroute) —
+ * a beep scheduled but not yet played is then void.
  */
 data class EngineOutput(
     val alert: TurnAlert? = null,
@@ -29,10 +29,10 @@ class TurnAlertEngine {
         const val RESET_JUMP_M = 50.0
         const val REROUTE_DROP_M = 150.0
 
-        // Vorausschau maximal ein Update-Fenster, sonst korrigiert das naechste Sample
+        // Lookahead of at most one update window, otherwise the next sample corrects it
         const val PREDICTION_HORIZON_MS = 1500L
 
-        // Plausibles Rad-Tempo in m/s; ausserhalb wird nicht prognostiziert
+        // Plausible cycling speed in m/s; no prediction outside this range
         const val MIN_SPEED_MPS = 1.0
         const val MAX_SPEED_MPS = 30.0
     }
@@ -43,7 +43,7 @@ class TurnAlertEngine {
     private var firedNear = true
 
     private fun arm(distance: Double, settings: TbtSettings) {
-        // Bereits unterschrittene Schwellen gelten als verpasst und bleiben stumm
+        // Thresholds already passed count as missed and stay silent
         firedEarly = distance <= settings.earlyAlert.distance
         firedFar = distance <= settings.farAlert.distance
         firedNear = distance <= settings.nearAlert.distance
@@ -81,7 +81,7 @@ class TurnAlertEngine {
         val far = settings.farAlert
         val near = settings.nearAlert
 
-        // Sofort-Fall: Schwelle bereits unterschritten
+        // Immediate case: threshold already crossed
         val immediate = when {
             near.enabled && !firedNear && distance <= near.distance -> near
             far.enabled && !firedFar && distance <= far.distance -> far
@@ -93,7 +93,7 @@ class TurnAlertEngine {
             return EngineOutput(alert = immediate, cancelPending = cancelPending)
         }
 
-        // Prognose-Fall: naechste Schwelle wird vor dem naechsten Update erreicht
+        // Prediction case: the next threshold will be reached before the next update
         if (speedMps != null && !speedMps.isNaN() &&
             speedMps in MIN_SPEED_MPS..MAX_SPEED_MPS
         ) {
