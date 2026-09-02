@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicReference
 
 class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
     companion object {
@@ -25,8 +26,14 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
     private var serviceJob: Job? = null
     private val engine = TurnAlertEngine()
 
+    // Speed arrives on a collector coroutine, the engine reads it on another.
+    // AtomicReference guarantees the latest published value is visible to all readers.
+    private val lastSpeedMps = AtomicReference<Double?>(null)
+
+    // Latest settings snapshot; pending beeps re-read it at fire time so a
+    // settings change during the prediction window is respected.
     @Volatile
-    private var lastSpeedMps: Double? = null
+    private var latestSettings: TbtSettings? = null
     private var pendingBeep: Job? = null
 
     override fun onCreate() {
@@ -57,7 +64,7 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
     private suspend fun monitorSpeed() {
         karooSystem.streamDataFlow(DataType.Type.SPEED)
             .mapNotNull { (it as? StreamState.Streaming)?.dataPoint?.values?.get(DataType.Field.SPEED) }
-            .collect { lastSpeedMps = it }
+            .collect { lastSpeedMps.set(it) }
     }
 
     private suspend fun CoroutineScope.monitorTurnDistance() {
@@ -73,8 +80,9 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
                 Triple(values, rideState, settings)
             }
             .collect { (values, rideState, settings) ->
+                latestSettings = settings
                 values[DataType.Field.DISTANCE_TO_NEXT_TURN]?.let { distance ->
-                    val output = engine.onDistance(distance, lastSpeedMps, settings)
+                    val output = engine.onDistance(distance, lastSpeedMps.get(), settings)
                     if (output.cancelPending) {
                         pendingBeep?.cancel()
                         pendingBeep = null
@@ -99,10 +107,13 @@ class KarooTbtExtension : KarooExtension("tbtbeep", "0.5.1") {
         rideState: RideState,
         settings: TbtSettings,
     ) {
-        val allowed = !settings.inRideOnly || rideState is RideState.Recording
+        // Re-read settings at fire time: a scheduled (predicted) beep may fire
+        // after the user changed settings during the prediction window.
+        val current = latestSettings ?: settings
+        val allowed = !current.inRideOnly || rideState is RideState.Recording
         if (!allowed) return
-        Log.i(TAG, "Turn alert fired (threshold ${alert.distance}m, speed=$lastSpeedMps)")
-        if (settings.wakeUpScreen) {
+        Log.i(TAG, "Turn alert fired (threshold ${alert.distance}m, speed=${lastSpeedMps.get()})")
+        if (current.wakeUpScreen) {
             karooSystem.dispatch(TurnScreenOn)
         }
         karooSystem.playBeep(alert.beep)
