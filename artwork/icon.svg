@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e2530"/>
+      <stop offset="1" stop-color="#0f141c"/>
+    </linearGradient>
+    <!-- One continuous gradient shared by shaft + head: kills the tonal seam -->
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff7a18"/>
+      <stop offset="1" stop-color="#ffb347"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background: rounded square, Karoo dark style -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#bg)"/>
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="none"
+        stroke="#2c3644" stroke-width="4"/>
+
+  <!-- Turn arrow: shaft centerline y=186; head tip at (402,186), vertically centered -->
+  <g fill="none" stroke="url(#accent)" stroke-width="52"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 150 386 L 150 260 Q 150 186 220 186 L 330 186"/>
+  </g>
+  <path d="M 298 112 L 406 186 L 298 260 Z" fill="url(#accent)"/>
+
+  <!-- Beep waves: three arcs radiating from the arrowhead, sized to survive small sizes -->
+  <g fill="none" stroke="#4fc3f7" stroke-width="32" stroke-linecap="round">
+    <path d="M 356 310 A 58 58 0 0 1 356 384"/>
+    <path d="M 392 288 A 100 100 0 0 1 392 406"/>
+    <path d="M 428 266 A 142 142 0 0 1 428 428"/>
+  </g>
+</svg>
