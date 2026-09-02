@@ -11,7 +11,7 @@ data class Beep(
     val frequency: Int = 800,
     val duration: Int = 100,
     val count: Int = 1,
-    // null = Legacy-Settings ohne Pattern-Feld: Verhalten ergibt sich aus count
+    // null = legacy settings without a pattern field: behavior derives from count
     val pattern: TonePattern? = null,
     val custom: String = "",
 ) {
@@ -22,7 +22,7 @@ data class Beep(
         else -> TonePattern.CUSTOM
     }
 
-    // Tonfolge als (Frequenz, Dauer)-Paare; Frequenz 0 = Pause
+    // Tone sequence as (frequency, duration) pairs; frequency 0 = pause
     fun tones(): List<Pair<Int, Int>> {
         if (frequency <= 0 || duration <= 0) return emptyList()
         return when (effectivePattern()) {
@@ -52,7 +52,7 @@ data class Beep(
         const val MAX_TONES = 10
         const val MAX_TONE_MS = 2000
 
-        // Format: "freq:dauer,0:pause,freq:dauer" — ungueltige Teile werden ignoriert
+        // Format: "freq:duration,0:pause,freq:duration" — invalid parts are ignored
         fun parseCustomSequence(s: String): List<Pair<Int, Int>> =
             s.split(',', ';')
                 .mapNotNull { part ->
